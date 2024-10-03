@@ -1,0 +1,70 @@
+[tool.coverage.report]
+exclude_lines = [
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+
+[tool.coverage.run]
+omit = [
+    "tests/*",
+    "*__init__.py"
+]
+
+[tool.ruff]
+lint.ignore = [
+    "ANN002",
+    "ANN003",
+    "B904",
+    "D203",
+    "D204",
+    "D205",
+    "D213",
+    "D401",
+    "D406",
+    "D407",
+    "D415",
+    "N818",
+    "PD015",
+    "PD901",
+    "RET504",
+    "RET505",
+    "RET506",
+    "S301",
+    "S311",
+    "S608",
+    "SIM108",
+    "UP007",
+    "UP015",
+]
+line-length = 120
+target-version = "py311"
+lint.select = [
+    "A",
+    "ARG",
+    "B",
+    "C4",
+    "D",
+    "E",
+    "ERA",
+    "EXE",
+    "F",
+    "I",
+    "ICN",
+    "ISC",
+    "N",
+    "PD",
+    "PIE",
+    "RET",
+    "S",
+    "SIM",
+    "T10",
+    "T20",
+    "UP",
+    "W",
+    "YTT",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
