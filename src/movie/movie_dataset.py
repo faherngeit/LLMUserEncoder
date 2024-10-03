@@ -1,5 +1,5 @@
 import pandas as pd
-from movie_user import MovieUser
+from .movie_user import MovieUser
 
 
 class MovieDataset:
@@ -37,7 +37,13 @@ class MovieDataset:
             whitelist (list, optional): The whitelist of movie IDs. Defaults to None.
         """
         self.folder = folder
-        self.__white_list = whitelist
+        self.__user_score = None
+        self.__movie_dict = None
+        self.__users = None
+        self.__movies = None
+        self.__ratings = None
+        self.__data = None
+        self.__white_list = None
 
     @property
     def user_score(self):

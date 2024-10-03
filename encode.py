@@ -49,7 +49,7 @@ def evaluate_embeddings(folder: str, agent: str, test: bool):
             user.description = llm_agent.get_user_description(user=user, test=test)
             if not test:
                 user.embedding = llm_agent.encode_description(user.description)
-            description_list.append(user.model_dump())
+            description_list.append(user.model_dump(exclude=["AGE_DICT"]))
         except Exception as e:
             logging.error(f"Error processing user {user.id}:\n{e}")
 

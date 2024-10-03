@@ -1,7 +1,8 @@
 from typing import Literal
 from functools import cache
 import yaml
-from openai_adapter import OpenAIAdapter
+
+from .openai_adapter import OpenAIAdapter
 
 class EmbedAgent:
     """
@@ -25,7 +26,7 @@ class EmbedAgent:
             model (str, optional): The model to use for generating embeddings. Defaults to None.
         """
         if agent == "openai":
-            with open('tokens.yml', 'r') as file:
+            with open('token.yaml', 'r') as file:
                 token = yaml.safe_load(file)['openai']
             self.agent = OpenAIAdapter(token=token, model=model)
 

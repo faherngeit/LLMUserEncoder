@@ -1,8 +1,8 @@
 from functools import cache
 from textwrap import dedent
 
-from EmbedAgent import EmbedAgent
-from movie.movie_user import MovieUser
+from .EmbedAgent import EmbedAgent
+from .movie.movie_user import MovieUser
 
 
 class EmbedAgentMovie(EmbedAgent):
