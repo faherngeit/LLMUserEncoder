@@ -65,6 +65,8 @@ def evaluate_embeddings(folder: str,
             error_list[user.id] = str(e)
             logging.error(f"Error processing user {user.id}:\n{e}")
 
+        break
+
     with open(f"{result_folder}/description.json", 'w') as f:
         json.dump(description_list, f, indent=2)
         logging.info(f"Descriptions saved to {result_folder}/description.json")
