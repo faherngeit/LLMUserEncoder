@@ -1,4 +1,7 @@
+import logging
+import os
 import pandas as pd
+
 from .movie_user import MovieUser
 
 
@@ -79,7 +82,9 @@ class MovieDataset:
             pd.DataFrame: The dataframe of users.
         """
         if self.__users is None:
-            self.__users = pd.read_csv(f"{self.folder}/users.dat", sep="::",
+            data_path = os.path.join(self.folder, "users.dat")
+            logging.info(F"Loading users from {data_path}")
+            self.__users = pd.read_csv(data_path, sep="::",
                                        names=["user_id", "gender", "age", "occupation", "zip_code"],
                                        encoding='latin-1', engine='python')
         return self.__users
@@ -93,7 +98,9 @@ class MovieDataset:
             pd.DataFrame: The dataframe of movies.
         """
         if self.__movies is None:
-            self.__movies = pd.read_csv(f"{self.folder}/movies.dat", sep="::", names=["movie_id", "title", "genres"],
+            data_path = os.path.join(self.folder, "movies.dat")
+            logging.info(F"Loading movies from {data_path}")
+            self.__movies = pd.read_csv(data_path, sep="::", names=["movie_id", "title", "genres"],
                                         encoding='latin-1', engine='python')
         return self.__movies
 
@@ -106,7 +113,9 @@ class MovieDataset:
             pd.DataFrame: The dataframe of ratings.
         """
         if self.__ratings is None:
-            self.__ratings = pd.read_csv(f"{self.folder}/ratings.dat", sep="::",
+            data_path = os.path.join(self.folder, "ratings.dat")
+            logging.info(F"Loading interactions from {data_path}")
+            self.__ratings = pd.read_csv(data_path, sep="::",
                                          names=["user_id", "movie_id", "rating", "timestamp"],
                                          encoding='latin-1', engine='python')
         return self.__ratings
