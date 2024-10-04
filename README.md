@@ -79,7 +79,7 @@ The `description.json` file contains an array of user objects. Each user object 
 #### Example
 
 ```json
-[[
+[
   {
     "id": 1,
     "gender": "F",
