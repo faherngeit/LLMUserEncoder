@@ -2,7 +2,7 @@ import logging
 import os
 import pandas as pd
 
-from .movie_user import MovieUser
+from src.movie.movie_user import MovieUser
 
 
 class MovieDataset:
@@ -83,10 +83,11 @@ class MovieDataset:
         """
         if self.__users is None:
             data_path = os.path.join(self.folder, "users.dat")
-            logging.info(F"Loading users from {data_path}")
+            logging.info(f"Loading users from {data_path}")
             self.__users = pd.read_csv(data_path, sep="::",
                                        names=["user_id", "gender", "age", "occupation", "zip_code"],
                                        encoding='latin-1', engine='python')
+            logging.info(f"User shape: {self.__users.shape}")
         return self.__users
 
     @property
@@ -102,6 +103,7 @@ class MovieDataset:
             logging.info(F"Loading movies from {data_path}")
             self.__movies = pd.read_csv(data_path, sep="::", names=["movie_id", "title", "genres"],
                                         encoding='latin-1', engine='python')
+            logging.info(f"Movie shape: {self.__movies.shape}")
         return self.__movies
 
     @property
@@ -118,6 +120,7 @@ class MovieDataset:
             self.__ratings = pd.read_csv(data_path, sep="::",
                                          names=["user_id", "movie_id", "rating", "timestamp"],
                                          encoding='latin-1', engine='python')
+            logging.info(f"Interaction shape: {self.__ratings.shape}")
         return self.__ratings
 
     @property

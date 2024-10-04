@@ -53,3 +53,8 @@ class MovieUser(BaseModel):
             int: The hash of the user id.
         """
         return hash(self.id)
+
+    def dict(self, *args, **kwargs) -> dict:
+        data = self.model_dump(exclude={"AGE_DICT"})
+        data["prompt"] = self.prompt()
+        return data

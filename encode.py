@@ -1,10 +1,12 @@
+from tqdm import tqdm
 import argparse
 import json
-from tqdm import tqdm
 import logging
+import os
 
+from src.agents.embed_agent import EmbedAgentMovie, EmbedAgentMusic
 from src.movie.movie_dataset import MovieDataset
-from src.EmbedAgentMovie import EmbedAgentMovie
+from src.music.music_dataset import MusicDataset
 
 logging.basicConfig(level=logging.INFO, format='[%(asctime)s] - %(levelname)s - %(message)s')
 
@@ -17,11 +19,12 @@ def parse_args():
         argparse.Namespace: The parsed arguments.
     """
     parser = argparse.ArgumentParser(description="Evaluate embeddings")
-    parser.add_argument("--folder", '-f',
+    parser.add_argument("--dataset", '-d',
                         type=str,
-                        dest='folder',
-                        default="data/ml-1m",
-                        help="Folder with dataset")
+                        dest='dataset',
+                        default="ml-1m",
+                        choices=["ml-1m", "amazon"],
+                        help="Dataset to use, either ml-1m or amazon for Amazon CD's and Vinyl")
     parser.add_argument("--agent", '-a',
                         type=str,
                         dest='agent',
@@ -38,7 +41,8 @@ def parse_args():
     return parser.parse_args()
 
 
-def evaluate_embeddings(folder: str,
+def evaluate_embeddings(mode: str,
+                        folder: str,
                         agent: str,
                         test: bool,
                         result_folder: str):
@@ -51,8 +55,14 @@ def evaluate_embeddings(folder: str,
         test (bool): Whether to run in test mode.
         result_folder (str): The folder for the results.
     """
-    dataset = MovieDataset(folder=folder)
-    llm_agent = EmbedAgentMovie(agent=agent)
+    match mode:
+        case "ml-1m":
+            dataset = MovieDataset(folder=folder)
+            llm_agent = EmbedAgentMovie(agent=agent)
+        case "amazon":
+            dataset = MusicDataset(folder=folder)
+            llm_agent = EmbedAgentMusic(agent=agent)
+
     description_list = []
     error_list = {}
     for user in tqdm(dataset):
@@ -60,19 +70,21 @@ def evaluate_embeddings(folder: str,
             user.description = llm_agent.get_user_description(user=user, test=test)
             if not test:
                 user.embedding = llm_agent.encode_description(user.description)
-            description_list.append(user.model_dump(exclude=["AGE_DICT"]))
+            description_list.append(user.dict())
         except Exception as e:
             error_list[user.id] = str(e)
             logging.error(f"Error processing user {user.id}:\n{e}")
 
         break
 
-    with open(f"{result_folder}/description.json", 'w') as f:
+    result_path = os.path.join(result_folder, f"{mode}_description.json")
+    with open(result_path, 'w') as f:
         json.dump(description_list, f, indent=2)
         logging.info(f"Descriptions saved to {result_folder}/description.json")
 
+    error_path = os.path.join(result_folder, f"{mode}_errors.json")
     if error_list:
-        with open(f"{result_folder}/errors.json", 'w') as f:
+        with open(error_path, 'w') as f:
             json.dump(error_list, f, indent=2)
             logging.warning(f"Number of Errors occurred is {len(error_list)}, please, see {result_folder}/errors.json")
 
@@ -83,4 +95,10 @@ if __name__ == '__main__':
     Main entry point for the script.
     """
     args = parse_args()
-    evaluate_embeddings(args.folder, args.agent, args.test, args.result_folder)
+
+    folder = os.path.join("data","ml-1m") if args.dataset == "ml-1m" else os.path.join("data/Amazon_CDs_and_Vinyl")
+    evaluate_embeddings(mode=args.dataset,
+                        folder=folder,
+                        agent=args.agent,
+                        test=args.test,
+                        result_folder=args.result_folder)
